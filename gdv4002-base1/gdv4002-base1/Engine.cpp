@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-// Engine.cpp ver 1.2
+// Engine.cpp ver 1.3
 
 #pragma region Engine variables
 
@@ -351,7 +351,10 @@ bool deleteObject(const char* key) {
 		// Object to delete found - first store key string
 		string objKey = iter->first;
 
-		// ...the delete from gameObjects.
+		// delete from gameObjects
+		delete iter->second;
+		iter->second = nullptr;
+
 		gameObjects.erase(iter);
 
 		// Now we need to string-match objKey to the objectCount array.
@@ -392,7 +395,10 @@ bool deleteObject(GameObject2D* objectPtr) {
 			// Object to delete found - first store key string
 			string objKey = iter->first;
 
-			// ...the delete from gameObjects.
+			// delete from gameObjects
+			delete iter->second;
+			iter->second = nullptr;
+
 			gameObjects.erase(iter);
 			objectErased = true;
 
@@ -433,7 +439,10 @@ int deleteMatchingObjects(const char* key) {
 			// Object to delete found - first store key string
 			string objKey = iter->first;
 
-			// ...the delete from gameObjects.
+			// delete from gameObjects
+			delete iter->second;
+			iter->second = nullptr;
+
 			iter = gameObjects.erase(iter);
 			eraseCount++;
 
