@@ -38,8 +38,15 @@ int main(void) {
 	if (player1Object != nullptr) {
 
 		//update player1 here
+		player1Object->position = glm::vec2(-1.0f, 1.0f);
 	}
-	aa
+	GameObject2D* player2Object = getObject("player2");
+	
+	if (player2Object != nullptr) {
+
+		player2Object->position = glm::vec2(1.5f, 1.0f);
+	}
+
 	//
 	// Set callback functions
 	//
