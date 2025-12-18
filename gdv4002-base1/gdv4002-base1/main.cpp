@@ -18,6 +18,10 @@ int main(void) {
 		printf("Cannot setup game window!!!\n");
 		return initResult; // exit if setup failed
 	}
+	else {
+
+		printf("Window setup okay!\n");
+	}
 
 	//
 	// Setup game scene objects here
