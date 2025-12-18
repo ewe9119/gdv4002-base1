@@ -38,12 +38,14 @@ int main(void) {
 
 		//update player1 here
 		player1Object->position = glm::vec2(-1.0f, 1.0f);
+		player1Object->orientation = glm::radians(-30.0f);
 	}
 	GameObject2D* player2Object = getObject("player2");
 	
 	if (player2Object != nullptr) {
 
 		player2Object->position = glm::vec2(1.5f, 1.0f);
+		player2Object->orientation = glm::radians(45.0f);
 	}
 
 	//
