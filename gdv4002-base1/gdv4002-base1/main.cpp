@@ -21,6 +21,7 @@ int main(void) {
 	else {
 
 		printf("Window setup okay!\n");
+
 	}
 
 	//
