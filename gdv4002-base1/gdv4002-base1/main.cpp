@@ -79,3 +79,4 @@ void myUpdate(GLFWwindow* window, double tDelta) {
 	GameObject2D* player1 = getObject("player1");
 	player1->orientation += player1->orientation + glm::radians(1.5);
 }
+dfgbvcfgd
