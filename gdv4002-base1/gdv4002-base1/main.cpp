@@ -1,10 +1,11 @@
 #include "Engine.h"
 #include "Keys.h"
+#include "Player.h"
+#include "Enemy.h"
 #include <bitset>
 
 
 // Function prototypes
-void myUpdate(GLFWwindow* window, double tDelta);
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
@@ -15,91 +16,57 @@ std::bitset<5> keys{ 0x0 };
 int main(void) {
 // main function body
 
-	// Initialise the engine (create window, setup OpenGL backend)
-	int initResult = engineInit("GDV4002 - Applied Maths for Games", 1024, 1024);
-
-	// If the engine initialisation failed report error and exit
+//Initialise the engine (create window, setup OpenGL backend)
+	int initResult = engineInit("GDV4002 - Applied Maths for Games - Base 1", 800, 600);
+	
+	//If engine initialisation failed, exit program
 	if (initResult != 0) {
+	printf("Cannot setup game window\n");
 
-		printf("Cannot setup game window!!!\n");
-		return initResult; // exit if setup failed
+		return initResult;
 	}
-	else {
+	// Loading and creating player object
 
-		printf("Window setup okay!\n");
+	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
 
-	}
+	Player* mainPlayer = new Player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f);
 
-	//
-	// Setup game scene objects here
+	addObject("player", mainPlayer);
 
-	addObject("player", glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), "Resources\\Textures\\player1_ship.png");
+	// 1. Load enemy texture 
+	GLuint enemyTexture = loadTexture("Resources\\Textures\\alien01.png");
 
-	addObject("enemy", glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\alien01.png");
+	// 2. Create enemy objects
+	Enemy* enemy1 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(45.0f));
 
-	addObject("enemy", glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\alien01.png");
+	Enemy* enemy2 = new Enemy(glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(90.0f));
 
-	addObject("enemy", glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\alien01.png");
+	Enemy* enemy3 = new Enemy(glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(60.0f));
+
+	// Add enemy objects to the engine
+	addObject("enemy1", enemy1);
+	addObject("enemy2", enemy2);
+	addObject("enemy3", enemy3);
 
 
 	//
 	// Set callback functions
 	//
-	
-	setUpdateFunction(myUpdate);
 	setKeyboardHandler(myKeyboardHandler);
-
-	listGameObjectKeys();
-	listObjectCounts();
-
-
-	// Enter main loop - this handles update and render calls
+	
+	//This hanles the update and render calls
 	engineMainLoop();
 
-	// When we quit (close window for example), clean up engine resources
+	// When we quit, like closing the window, this will clean up engine resources
 	engineShutdown();
 
-	// return success :)
-	return 0;
-}
-
-float enemyPhase[3] = { 0.0f, 0.0f, 0.0f };
-float enemyPhaseVelocity[3] = { glm::radians(90.0f),
- glm::radians(90.0f),
- glm::radians(90.0f) };
-
-void myUpdate(GLFWwindow* window, double tDelta) {
-	GameObjectCollection enemies = getObjectCollection("enemy");
-	for (int i = 0; i < enemies.objectCount; i++) {
-
-		enemies.objectArray[i]->position.y = sinf(enemyPhase[i]); // assume phase stored in radians so no conversion needed
-
-		enemyPhase[i] += enemyPhaseVelocity[i] * tDelta;
-		static float playerSpeed = 1.0f; // distance per second
-
-		GameObject2D* player = getObject("player");
-
-		if (keys.test(Key::W) == true) {
-
-			player->position.y += playerSpeed * (float)tDelta;
-		}
-		if (keys.test(Key::A) == true) {
-
-			player->position.y += playerSpeed * (float)tDelta;
-		}
-		if (keys.test(Key::S) == true) {
-
-			player->position.y -= playerSpeed * (float)tDelta;
-		}
-		if (keys.test(Key::D) == true) {
-
-			player->position.y -= playerSpeed * (float)tDelta;
-		}
-
-
-	}
+	return 0;	
+		
 
 }
+
+
+
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check if the key was just pressed
