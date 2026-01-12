@@ -68,5 +68,8 @@
     <ClInclude Include="glPrint.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Keys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

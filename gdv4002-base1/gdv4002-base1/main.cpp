@@ -1,4 +1,6 @@
 #include "Engine.h"
+#include "Keys.h"
+#include <bitset>
 
 
 // Function prototypes
@@ -8,7 +10,7 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 
 
 // Global Variables
-
+std::bitset<5> keys{ 0x0 };
 
 int main(void) {
 // main function body
@@ -73,6 +75,28 @@ void myUpdate(GLFWwindow* window, double tDelta) {
 		enemies.objectArray[i]->position.y = sinf(enemyPhase[i]); // assume phase stored in radians so no conversion needed
 
 		enemyPhase[i] += enemyPhaseVelocity[i] * tDelta;
+		static float playerSpeed = 1.0f; // distance per second
+
+		GameObject2D* player = getObject("player");
+
+		if (keys.test(Key::W) == true) {
+
+			player->position.y += playerSpeed * (float)tDelta;
+		}
+		if (keys.test(Key::A) == true) {
+
+			player->position.y += playerSpeed * (float)tDelta;
+		}
+		if (keys.test(Key::S) == true) {
+
+			player->position.y -= playerSpeed * (float)tDelta;
+		}
+		if (keys.test(Key::D) == true) {
+
+			player->position.y -= playerSpeed * (float)tDelta;
+		}
+
+
 	}
 
 }
@@ -89,9 +113,17 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 				glfwSetWindowShouldClose(window, true);
 			break;
 		case GLFW_KEY_W:
-			printf("w pressed\n");
+			keys[Key::W] = true;
 			break;
-
+		case GLFW_KEY_A:
+			keys[Key::A] = true;
+			break;
+		case GLFW_KEY_S:
+			keys[Key::S] = true;
+			break;
+		case GLFW_KEY_D:
+			keys[Key::D] = true;
+			break;
 
 		}
 	}
@@ -103,8 +135,19 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 		switch (key)
 		{
 		case GLFW_KEY_W:
-			printf("w released\n");
+			keys[Key::W] = false;
 			break;
+		case GLFW_KEY_A:
+			keys[Key::A] = false;
+			break;
+		case GLFW_KEY_S:
+			keys[Key::S] = false;
+			break;
+		case GLFW_KEY_D:
+			keys[Key::D] = false;
+			break;
+
+
 		}
 
 	}
