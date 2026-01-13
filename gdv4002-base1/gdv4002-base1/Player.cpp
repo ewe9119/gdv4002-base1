@@ -3,9 +3,8 @@
 #include "Engine.h"
 #include <bitset>
 
-extern glm::vec2 gravity;
-
 extern std::bitset<5> keys;
+extern glm::vec2 gravity;
 Player::Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize, GLuint initTextureID, float mass) : GameObject2D(initPosition, initOrientation, initSize, initTextureID) {
 
 	this->mass = mass;

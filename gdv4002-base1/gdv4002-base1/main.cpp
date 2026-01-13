@@ -3,9 +3,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Emitter.h"
-#include <bitset>
-
-glm::vec2 gravity = glm::vec2(0.0f, -1.0f);
+#include <bitset> glm::vec2 gravity = glm::vec2(0.0f, -10a.0f);
 
 
 // Function prototypes
