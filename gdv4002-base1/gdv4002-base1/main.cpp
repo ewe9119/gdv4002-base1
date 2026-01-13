@@ -3,18 +3,22 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Emitter.h"
-#include <bitset> glm::vec2 gravity = glm::vec2(0.0f, -10a.0f);
+#include "glPrint.h"
+#include <bitset>  glm::vec2 gravity = glm::vec2(0.0f, -1.0f);
 
 
 // Function prototypes
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
-
+//void deleteSnowlakes(GLFWwindow* window, double tDelta);
+void myRender(GLFWwindow* window);
 
 // Global Variables
 glm::vec2 gravity = glm::vec2(0.0f, -0.005f);
 std::bitset<5> keys{ 0x0 };
 
 int main(void) {
+	GLuint myFontNormal = 0;
+	GLuint myFontUnderline = 0;
 
 // main function body
 
@@ -25,9 +29,22 @@ int main(void) {
 
 	addObject("emitter", emitter);
 
+	void deleteSnowlakes(GLFWwindow * window, double tDelta); {
+
+		GameObjectCollection snowflakes = getObjectCollection("snowflake");
+
+		for (int i = 0; i < snowflakes.objectCount; i++) {
+
+			if (snowflakes.objectArray[i]->position.y < -(getViewplaneHeight() / 2.0f)) {
+
+				deleteObject(snowflakes.objectArray[i]);
+			}
+		}
+	}
 
 //Initialise the engine (create window, setup OpenGL backend)
 	int initResult = engineInit("GDV4002 - Applied Maths for Games - Base 1", 800, 600, 5.0f);
+	setViewplaneWidth(10.0f);
 	
 	//If engine initialisation failed, exit program
 	if (initResult != 0) {
@@ -35,6 +52,17 @@ int main(void) {
 
 		return initResult;
 	}
+
+	myFontNormal = glBuildFont(L"Consolas", 24);
+	myFontUnderline = glBuildFont(L"Aptos", 24, GLFONT_STYLE::BOLD | GLFONT_STYLE::UNDERLINE);
+
+	//
+	//Rendering properties are set up (enabling blending)
+	// 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_ALWAYS);
+
 	// Loading and creating player object
 
 	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
@@ -63,18 +91,25 @@ int main(void) {
 	// Set callback functions
 	//
 	setKeyboardHandler(myKeyboardHandler);
-	
+	//setRenderFunction(myRender);
+
 	//This hanles the update and render calls
 	engineMainLoop();
 
 	// When we quit, like closing the window, this will clean up engine resources
 	engineShutdown();
 
+	//return success :)
 	return 0;	
 		
 
 }
 
+//void myRender(GLFWwindow* window) {
+
+	// Render code goes here…
+
+//}
 
 
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods)

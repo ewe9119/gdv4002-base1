@@ -62,6 +62,19 @@ void Emitter::update(double tDelta) {
 
 		particleNumber++;
 
+		// Obtain a seed for the random number engine
+		random_device rd;
+
+		// Standard mersenne_twister_engine seeded with rd() - mt19937 is a high-quality pseudo-random number generator
+		gen = mt19937(rd());
+
+		spriteDist = uniform_int_distribution<int>(0, 7);
+		normDist = uniform_real_distribution<float>(-1.0f, 1.0f);
+		massDist = uniform_real_distribution<float>(0.005f, 0.08f);
+		scaleDist = uniform_real_distribution<float>(0.1f, 0.5f);
+
+
+
 	}
 }
 
