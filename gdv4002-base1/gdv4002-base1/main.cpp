@@ -65,14 +65,14 @@ int main(void) {
 
 	// Loading and creating player object
 
-	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
+	GLuint playerTexture = loadTexture("Resources\\Textures\\player2_ship.png");
 
 	Player* mainPlayer = new Player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f);
 
 	addObject("player", mainPlayer);
 
 	// 1. Load enemy texture 
-	GLuint enemyTexture = loadTexture("Resources\\Textures\\alien01.png");
+	GLuint enemyTexture = loadTexture("Resources\\Textures\\alien02.png");
 
 	// 2. Create enemy objects
 	Enemy* enemy1 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(45.0f));
@@ -104,6 +104,7 @@ int main(void) {
 		
 
 }
+
 
 //void myRender(GLFWwindow* window) {
 
@@ -163,4 +164,8 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 		}
 
 	}
+}
+
+void myRender(GLFWwindow* window)
+{
 }

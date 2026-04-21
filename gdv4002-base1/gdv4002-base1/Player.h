@@ -8,6 +8,8 @@ private:
 	float		mass;
 	glm::vec2	velocity;
 
+	glm::vec2 size;
+
 
 public:
 	Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize, GLuint initTextureID, float mass);
