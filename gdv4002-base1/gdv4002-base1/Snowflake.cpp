@@ -1,5 +1,7 @@
 #include "Snowflake.h"
+#include "Engine.h"
 extern glm::vec2 gravity;
+
 Snowflake::Snowflake(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize, GLuint initTextureID, float mass, float angleChangePerSecond) : GameObject2D(initPosition, initOrientation, initSize, initTextureID) {
 
 	this->mass = mass;
@@ -9,22 +11,32 @@ Snowflake::Snowflake(glm::vec2 initPosition, float initOrientation, glm::vec2 in
 }
 void Snowflake::update(double tDelta) {
 
-	// 1. Physics bit for movement
+    // Physics 
 
-	// 1.1. Sum forces - only add gravity for now
-	glm::vec2 F = gravity;
+    // slow falling
+	position.y -= mass * 0.0001f * (float)tDelta;
 
-	// 1.2. Calculate acceleration
-	glm::vec2 accel = F * (1.0f / mass);
+    // Apply gravity
+    glm::vec2 accel = gravity / mass;
 
-	// 1.3. Update velocity
-	velocity = velocity + accel * (float)tDelta;
+    // Update velocity
+    velocity += accel * 0.2f * (float)tDelta;
 
-	// 1.4. Update position
-	position = position + velocity * (float)tDelta;
+    // Update position
+    position += velocity * (float)tDelta;
+
+    // Rotation
+    orientation += angleChangePerSecond * (float)tDelta;
+
+    //Drifting snow
+	position.x += sinf(glfwGetTime()) * 0.1f * (float)tDelta;
 
 
+    //
+    float halfHeight = getViewplaneHeight() / 2.0f;
 
-	// 2. Non-physics bit for rotation
-	orientation += angleChangePerSecond * (float)tDelta;
+    if (position.y < -halfHeight) {
+        position.y = halfHeight;   // send back to top
+        velocity.y = 0.002f;         // reset fall speed
+    }
 }
