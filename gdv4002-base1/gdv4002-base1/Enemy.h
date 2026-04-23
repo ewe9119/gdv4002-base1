@@ -15,7 +15,8 @@ public:
 	float		phaseVelocity; // angle change per second
 
 	glm::vec2 velocity;
-
+	glm::vec2 wanderDir;
+	float wanderTimer;
 };
 
 

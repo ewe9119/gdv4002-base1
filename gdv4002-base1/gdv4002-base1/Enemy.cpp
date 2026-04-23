@@ -14,85 +14,97 @@ Enemy::Enemy(
 	phaseVelocity = initialPhaseVelocity;
 
 	velocity = glm::vec2(0.0f, 0.0f);
+
+    // wander system
+    float angle = (float(rand()) / RAND_MAX) * 6.2831853f;
+    wanderDir = glm::vec2(cos(angle), sin(angle));
+    wanderTimer = 0.0f;
 }
+
 void Enemy::update(double tDelta) {
 
-	// random drifting 
-	velocity.x += ((rand() % 100) / 100.0f - 0.5f) * 0.01f;
-	velocity.y += ((rand() % 100) / 100.0f - 0.5f) * 0.01f;
+    // enemies wandering
+    wanderTimer += (float)tDelta;
 
-	// max speed 
-	float maxSpeed = 2.0f;
+    if (wanderTimer > 1.0f) {
 
-	// clamp speed
-	if (glm::length(velocity) > maxSpeed) {
-		velocity = glm::normalize(velocity) * maxSpeed;
-	}
+        glm::vec2 newDir(
+            (float(rand()) / RAND_MAX) * 2.0f - 1.0f,
+            (float(rand()) / RAND_MAX) * 2.0f - 1.0f
+        );
 
-	//  movement
-	position += velocity * (float)tDelta;
+        if (glm::length(newDir) > 0.0f) {
+            wanderDir = glm::normalize(newDir);
+        }
 
-	//enemy collision
-	GameObjectCollection enemies = getObjectCollection("enemy");
+        wanderTimer = 0.0f;
+    }
 
-	for (int i = 0; i < enemies.objectCount; i++) {
+    //  continuous movement force
+    velocity += wanderDir * 0.4f;
 
-		Enemy* other = (Enemy*)enemies.objectArray[i];
+	//enemy separation
+    GameObjectCollection enemies = getObjectCollection("enemy");
 
-		if (other == this) continue;
+    for (int i = 0; i < enemies.objectCount; i++) {
 
-		glm::vec2 diff = position - other->position;
-		float dist = glm::length(diff);
+        Enemy* other = (Enemy*)enemies.objectArray[i];
 
-		float minDist = (size.x / 2.0f) + (other->size.x / 2.0f);
+        if (other == this) continue;
 
-		if (dist < minDist && dist > 0.0f) {
+        glm::vec2 diff = position - other->position;
+        float dist = glm::length(diff);
 
-			glm::vec2 pushDir = glm::normalize(diff);
-			float overlap = minDist - dist;
+        float minDist = size.x;
 
-			// push apart
-			position += pushDir * (overlap * 0.5f);
-			other->position -= pushDir * (overlap * 0.5f);
+        if (dist > 0.0001f && dist < minDist) {
 
-			// smooth bounce
-			velocity += pushDir * 0.5f;
-			other->velocity -= pushDir * 0.5f;
-		}
-	}
+            glm::vec2 pushDir = diff / dist;
 
-	// motion
-	position.y += sinf(phaseAngle) * 0.01f;
+            float strength = (minDist - dist) * 0.8f;
 
-	// update phase
-	phaseAngle += phaseVelocity * tDelta;
+            velocity += pushDir * strength;
+        }
+    }
 
 
-	float halfWidth = getViewplaneWidth() / 2.0f;
-	float halfHeight = getViewplaneHeight() / 2.0f;
+    //stability
+    
+    velocity *= 0.99f;
 
-	// left
-	if (position.x - size.x / 2 < -halfWidth) {
-		position.x = -halfWidth + size.x / 2;
-		velocity.x *= -1.0f; // enemy bounce
-	}
+    float maxSpeed = 2.0f;
 
-	// right
-	if (position.x + size.x / 2 > halfWidth) {
-		position.x = halfWidth - size.x / 2;
-		velocity.x *= -1.0f; // enemy bounce
-	}
+    if (glm::length(velocity) > maxSpeed) {
+        velocity = glm::normalize(velocity) * maxSpeed;
+    }
 
-	// bottom
-	if (position.y - size.y / 2 < -halfHeight) {
-		position.y = -halfHeight + size.y / 2;
-		velocity.y *= -1.0f; // enemy bounce
-	}
+    // movement
+    position += velocity * (float)tDelta;
 
-	// top
-	if (position.y + size.y / 2 > halfHeight) {
-		position.y = halfHeight - size.y / 2;
-		velocity.y *= -1.0f; // enemy bounce
-	}
+    phaseAngle += phaseVelocity * tDelta;
+
+    float halfWidth = getViewplaneWidth() / 2.0f;
+    float halfHeight = getViewplaneHeight() / 2.0f;
+
+    // soft bounce movement
+    if (position.x - size.x / 2 < -halfWidth) {
+        position.x = -halfWidth + size.x / 2;
+        velocity.x = abs(velocity.x) * 0.5f;
+    }
+
+    if (position.x + size.x / 2 > halfWidth) {
+        position.x = halfWidth - size.x / 2;
+        velocity.x = -abs(velocity.x) * 0.5f;
+    }
+
+    if (position.y - size.y / 2 < -halfHeight) {
+        position.y = -halfHeight + size.y / 2;
+        velocity.y = abs(velocity.y) * 0.5f;
+    }
+
+    if (position.y + size.y / 2 > halfHeight) {
+        position.y = halfHeight - size.y / 2;
+        velocity.y = -abs(velocity.y) * 0.5f;
+    }
 }
 

@@ -41,7 +41,6 @@ int main(void) {
 
 	addObject("emitter", emitter);
 
-
 	// Loading background
 	GLuint bgTexture = loadTexture("Resources\\Textures\\background.png");
 
