@@ -45,6 +45,18 @@ int main(void) {
 //Initialise the engine (create window, setup OpenGL backend)
 	int initResult = engineInit("GDV4002 - Applied Maths for Games - Base 1", 800, 600, 5.0f);
 	setViewplaneWidth(10.0f);
+
+// Loading background
+	GLuint bgTexture = loadTexture("Resources\\Textures\\background.png");
+
+	GameObject2D* background = new GameObject2D(
+		glm::vec2(0.0f, 0.0f),     // center of screen
+		0.0f,
+		glm::vec2(10.0f, 10.0f),   // size of screen
+		bgTexture
+	);
+
+	addObject("background", background);
 	
 	//If engine initialisation failed, exit program
 	if (initResult != 0) {
@@ -85,7 +97,6 @@ int main(void) {
 	addObject("enemy1", enemy1);
 	addObject("enemy2", enemy2);
 	addObject("enemy3", enemy3);
-
 
 
 	//

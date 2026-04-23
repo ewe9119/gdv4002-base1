@@ -11,12 +11,25 @@ Enemy::Enemy(
 
 	phaseAngle = initialPhase;
 	phaseVelocity = initialPhaseVelocity;
+
+	velocity = glm::vec2(0.0f, 0.0f);
 }
 void Enemy::update(double tDelta) {
 
-	// Set position based on phaseAngle
-	position.y = sinf(phaseAngle);
+	// RANDOM DRIFT 
+	velocity.x += ((rand() % 100) / 100.0f - 0.5f) * 0.01f;
+	velocity.y += ((rand() % 100) / 100.0f - 0.5f) * 0.01f;
 
-	// Update phaseAngle based on velocity * time elapsed
+	// LIMIT SPEED 
+	float maxSpeed = 2.0f;
+
+
+	// free movement
+	position += velocity * (float)tDelta;
+
+	// keep your sine motion BUT apply it properly
+	position.y += sinf(phaseAngle) * 0.01f;
+
+	// update phase
 	phaseAngle += phaseVelocity * tDelta;
 }
